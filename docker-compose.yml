@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mysql:
+    build: './database/mysql/'
+    ports:
+      - "3366:3306"    
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: 'tgdd'
+    restart: always
+
+  crud-api:
+    build: ./database/crud-api/
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    restart: always
+
+  data-crawling-tgdd-api:
+    build: ./data-crawling-tgdd-api/
+    ports:
+      - "5000:5000"
+    depends_on:
+      - crud-api
+    restart: always
+
+  fronted:
+    build: ./web-tgdd/
+    ports: 
+      - "3009:3009"
+    depends_on:
+      - crud-api
+    restart: always
